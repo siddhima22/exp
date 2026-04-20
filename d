@@ -265,7 +265,7 @@ public class GroupServer {
                     String msg = in.nextLine();
 
                     System.out.println("Message: " + msg);
-
+                    //broadcast
                     for (PrintWriter pw : clients) {
                         pw.println(msg);
                     }
@@ -402,27 +402,25 @@ public class LoadBalancing {
 
 
 //BULLY
-import java.util.Scanner;
+import java.util.*;
 
 public class BullyAlgorithm {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Enter number of processes: ");
+        System.out.print("Enter number of nodes: ");
         int n = sc.nextInt();
 
         int[] active = new int[n];
-
-        // All processes active
         for (int i = 0; i < n; i++)
             active[i] = 1;
 
-        System.out.print("Enter crashed process: ");
+        System.out.print("Enter crashed node: ");
         int crash = sc.nextInt();
         active[crash] = 0;
 
-        System.out.print("Enter initiator process: ");
+        System.out.print("Enter initiator node: ");
         int init = sc.nextInt();
 
         int coordinator = init;
@@ -430,14 +428,21 @@ public class BullyAlgorithm {
         // Election
         for (int i = init + 1; i < n; i++) {
             if (active[i] == 1) {
-                System.out.println(init + " -> " + i);
+                System.out.println("Election message sent from " + init + " to " + i + ".");
+                System.out.println("Okay message from " + i + ".");
                 coordinator = i;
             }
+
         }
 
-        System.out.println("Coordinator: " + coordinator);
+        System.out.println("Final coordinator is " + coordinator);
 
-        sc.close();
+        // Final broadcast
+        for (int i = 0; i < n; i++) {
+            if (active[i] == 1) {
+                System.out.println("Message to " + i + ": Coordinator is " + coordinator + ".");
+            }
+        }
     }
 }
 
