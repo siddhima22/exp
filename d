@@ -227,6 +227,51 @@ public class GroupClient {
     }
 }
 
+//GROUP SERVER EASY
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class GroupServer {
+
+    static ArrayList<PrintWriter> clients = new ArrayList<>();
+
+    public static void main(String[] args) throws Exception {
+
+        ServerSocket ss = new ServerSocket(9999);
+        System.out.println("Server started...");
+
+        while (true) {
+            Socket socket = ss.accept();
+            System.out.println("New client connected");
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            clients.add(out);
+
+            new Thread(() -> {
+                try {
+                    Scanner in = new Scanner(socket.getInputStream());
+
+                    while (in.hasNextLine()) {
+                        String msg = in.nextLine();
+
+                        System.out.println("Message: " + msg);
+
+                        // broadcast
+                        for (PrintWriter pw : clients) {
+                            pw.println(msg);
+                        }
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("Client disconnected");
+                }
+            }).start();
+        }
+    }
+}
+
+
 //GOUP SERVER
 import java.io.*;
 import java.net.*;
@@ -276,6 +321,8 @@ public class GroupServer {
         }
     }
 }
+
+
 
 
 //GLOBAL DISTRIBUTED AVG
