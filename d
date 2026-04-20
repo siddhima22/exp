@@ -452,47 +452,54 @@ public class LoadBalancing {
 import java.util.*;
 
 public class BullyAlgorithm {
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Enter number of nodes: ");
+        System.out.print("Enter number of processes: ");
         int n = sc.nextInt();
 
-        int[] active = new int[n];
-        for (int i = 0; i < n; i++)
-            active[i] = 1;
+        int[] process = new int[n];
 
-        System.out.print("Enter crashed node: ");
-        int crash = sc.nextInt();
-        active[crash] = 0;
+        // initialize all processes as active (1)
+        Arrays.fill(process, 1);
 
-        System.out.print("Enter initiator node: ");
-        int init = sc.nextInt();
+        System.out.print("Enter crashed process: ");
+        int crashed = sc.nextInt();
+        process[crashed] = 0;
 
-        int coordinator = init;
+        System.out.println("Process " + crashed + " has crashed");
 
-        // Election
-        for (int i = init + 1; i < n; i++) {
-            if (active[i] == 1) {
-                System.out.println("Election message sent from " + init + " to " + i + ".");
-                System.out.println("Okay message from " + i + ".");
-                coordinator = i;
+        System.out.print("Enter initiator process: ");
+        int initiator = sc.nextInt();
+
+        System.out.println("Election started by " + initiator);
+
+        int coordinator = initiator;
+
+        for (int i = initiator + 1; i < n; i++) {
+            if (process[i] == 1) {
+                System.out.println("Initiator sent message to " + i);
+                System.out.println("Process " + i + " responded OK");
+                System.out.println("New election started by process " + i);
+
+                coordinator = i; // update coordinator
             }
-
         }
 
-        System.out.println("Final coordinator is " + coordinator);
+        System.out.println("Final coordinator is process " + coordinator);
 
-        // Final broadcast
+        // Broadcast to all other processes
         for (int i = 0; i < n; i++) {
-            if (active[i] == 1) {
-                System.out.println("Message to " + i + ": Coordinator is " + coordinator + ".");
+            if (process[i] == 1 && i != coordinator) {
+                System.out.println("Coordinator " + coordinator + " sent message to process " + i);
             }
         }
+
+        sc.close();
     }
 }
-
 
 //MULTITHREADING
 class MyThread extends Thread {
